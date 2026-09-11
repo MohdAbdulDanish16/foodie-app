@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../App.css";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function MyOrders() {
   const navigate = useNavigate();
 
@@ -19,7 +21,7 @@ function MyOrders() {
 
       try {
         const response = await fetch(
-          "http://localhost:5000/api/orders/my-orders",
+          `${API_URL}/api/orders/my-orders`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

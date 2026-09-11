@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../App.css";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function Checkout() {
   const navigate = useNavigate();
 
@@ -56,7 +58,7 @@ function Checkout() {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/orders",
+        `${API_URL}/api/orders`,
         {
           method: "POST",
           headers: {

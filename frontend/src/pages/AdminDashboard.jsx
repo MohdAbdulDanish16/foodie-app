@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "../App.css";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function AdminDashboard() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,7 +14,7 @@ function AdminDashboard() {
 
       try {
         const response = await fetch(
-          "http://localhost:5000/api/orders/all",
+          `${API_URL}/api/orders/all`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

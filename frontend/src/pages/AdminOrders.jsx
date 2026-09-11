@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../App.css";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function AdminOrders() {
   const navigate = useNavigate();
 
@@ -18,7 +20,7 @@ function AdminOrders() {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/orders/all",
+        `${API_URL}/api/orders/all`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -51,7 +53,7 @@ function AdminOrders() {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/orders/${orderId}/status`,
+        `${API_URL}/api/orders/${orderId}/status`,
         {
           method: "PATCH",
           headers: {
