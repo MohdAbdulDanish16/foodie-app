@@ -28,14 +28,21 @@ router.post(
         isAvailable,
       } = req.body;
 
-      if (!restaurantId || !name || price === undefined || !category) {
+      if (
+        !restaurantId ||
+        !name ||
+        price === undefined ||
+        !category
+      ) {
         return res.status(400).json({
           message:
             "Restaurant, name, price and category are required",
         });
       }
 
-      const restaurant = await Restaurant.findById(restaurantId);
+      const restaurant = await Restaurant.findById(
+        restaurantId
+      );
 
       if (!restaurant) {
         return res.status(404).json({
@@ -51,7 +58,9 @@ router.post(
         category,
         image,
         isAvailable:
-          isAvailable !== undefined ? isAvailable : true,
+          isAvailable !== undefined
+            ? isAvailable
+            : true,
       });
 
       res.status(201).json({
@@ -71,15 +80,16 @@ router.post(
 // ==========================================
 // GET ALL MENU ITEMS
 // GET /api/menu
+// PUBLIC - Customers can view available items
 // ==========================================
 
 router.get(
   "/",
-  authMiddleware,
-  adminMiddleware,
   async (req, res) => {
     try {
-      const menuItems = await MenuItem.find()
+      const menuItems = await MenuItem.find({
+        isAvailable: true,
+      })
         .populate("restaurantId", "name cuisine")
         .sort({ createdAt: -1 });
 
@@ -137,7 +147,10 @@ router.get(
     try {
       const menuItem = await MenuItem.findById(
         req.params.id
-      ).populate("restaurantId", "name cuisine");
+      ).populate(
+        "restaurantId",
+        "name cuisine"
+      );
 
       if (!menuItem) {
         return res.status(404).json({
@@ -190,9 +203,10 @@ router.patch(
       }
 
       if (restaurantId !== undefined) {
-        const restaurant = await Restaurant.findById(
-          restaurantId
-        );
+        const restaurant =
+          await Restaurant.findById(
+            restaurantId
+          );
 
         if (!restaurant) {
           return res.status(404).json({
@@ -254,9 +268,10 @@ router.delete(
   adminMiddleware,
   async (req, res) => {
     try {
-      const menuItem = await MenuItem.findByIdAndDelete(
-        req.params.id
-      );
+      const menuItem =
+        await MenuItem.findByIdAndDelete(
+          req.params.id
+        );
 
       if (!menuItem) {
         return res.status(404).json({
