@@ -104,12 +104,24 @@ function AdminDashboard() {
       </div>
 
       <div className="admin-dashboard-actions">
-        <Link to="/admin/orders">
-          <button className="admin-dashboard-btn">
-            📦 Manage Orders
-          </button>
-        </Link>
-      </div>
+  <Link to="/admin/orders">
+    <button className="admin-dashboard-btn">
+      📦 Manage Orders
+    </button>
+  </Link>
+
+  <Link to="/admin/restaurants">
+    <button className="admin-dashboard-btn">
+      🍽️ Manage Restaurants
+    </button>
+  </Link>
+
+  <Link to="/admin/menu">
+    <button className="admin-dashboard-btn">
+      🍔 Manage Menu
+    </button>
+  </Link>
+</div>
 
       <div className="admin-recent-orders">
         <div className="admin-section-header">

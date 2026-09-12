@@ -1,13 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import "../App.css";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 function Menu() {
   const navigate = useNavigate();
 
-    const [searchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
-      const categoryFromURL = searchParams.get("category");
+  const categoryFromURL = searchParams.get("category");
+
+  const [foods, setFoods] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const [selectedCategory, setSelectedCategory] =
     useState(categoryFromURL || "Popular");
@@ -18,162 +23,66 @@ function Menu() {
     return savedCart ? JSON.parse(savedCart) : [];
   });
 
-  // =========================
-  // FOOD ITEMS
-  // =========================
+  // ==========================================
+  // FETCH MENU FROM BACKEND
+  // ==========================================
 
-  const foods = [
-    // ---------- PIZZA ----------
-    {
-      name: "Margherita Pizza",
-      description: "Fresh tomato, mozzarella and basil",
-      price: 299,
-      category: "Pizza",
-      image:
-        "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=600&q=80",
-    },
+  useEffect(() => {
+    const fetchMenu = async () => {
+      try {
+        const response = await fetch(
+          `${API_URL}/api/menu`
+        );
 
-    {
-      name: "Farmhouse Pizza",
-      description: "Loaded with fresh vegetables and cheese",
-      price: 399,
-      category: "Pizza",
-      image:
-        "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80",
-    },
+        const data = await response.json();
 
-    {
-      name: "Cheese Burst Pizza",
-      description: "Extra cheesy pizza with a delicious crust",
-      price: 449,
-      category: "Pizza",
-      image:
-        "https://images.unsplash.com/photo-1579751626657-72bc17010498?auto=format&fit=crop&w=600&q=80",
-    },
+        if (!response.ok) {
+          alert(`❌ ${data.message}`);
+          return;
+        }
 
-    // ---------- BURGERS ----------
-    {
-      name: "Classic Burger",
-      description: "Juicy chicken patty with fresh vegetables",
-      price: 199,
-      category: "Burgers",
-      image:
-        "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80",
-    },
+        setFoods(data.menuItems);
+      } catch (error) {
+        console.log(error);
+        alert("❌ Cannot connect to the server.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    {
-      name: "Cheese Burger",
-      description: "Juicy burger topped with melted cheese",
-      price: 249,
-      category: "Burgers",
-      image:
-        "https://images.unsplash.com/photo-1553979459-d2229ba7433b?auto=format&fit=crop&w=600&q=80",
-    },
+    fetchMenu();
+  }, []);
 
-    {
-      name: "Chicken Burger",
-      description: "Crispy chicken burger with fresh lettuce",
-      price: 299,
-      category: "Burgers",
-      image:
-        "https://images.unsplash.com/photo-1606755962773-d324e0a13086?auto=format&fit=crop&w=600&q=80",
-    },
-
-    // ---------- CHICKEN ----------
-    {
-      name: "Chicken Wings",
-      description: "Crispy spicy chicken wings",
-      price: 249,
-      category: "Chicken",
-      image:
-        "https://images.unsplash.com/photo-1527477396000-e27163b481c2?auto=format&fit=crop&w=600&q=80",
-    },
-
-    {
-      name: "Fried Chicken",
-      description: "Crispy golden fried chicken",
-      price: 279,
-      category: "Chicken",
-      image:
-        "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=600&q=80",
-    },
-
-    {
-      name: "Chicken Biryani",
-      description: "Aromatic basmati rice with tender chicken",
-      price: 299,
-      category: "Chicken",
-      image:
-        "https://images.unsplash.com/photo-1563379091339-03246963d96c?auto=format&fit=crop&w=600&q=80",
-    },
-
-    // ---------- POPULAR ----------
-    {
-      name: "French Fries",
-      description: "Crispy golden french fries",
-      price: 129,
-      category: "Popular",
-      image:
-        "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=600&q=80",
-    },
-
-    // ---------- DRINKS ----------
-    {
-      name: "Fresh Lime Soda",
-      description: "Refreshing chilled lime soda",
-      price: 99,
-      category: "Drinks",
-      image:
-        "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80",
-    },
-
-    {
-      name: "Cold Coffee",
-      description: "Creamy chilled coffee",
-      price: 149,
-      category: "Drinks",
-      image:
-        "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=600&q=80",
-    },
-
-    {
-      name: "Fresh Orange Juice",
-      description: "Freshly prepared orange juice",
-      price: 129,
-      category: "Drinks",
-      image:
-        "https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=600&q=80",
-    },
-  ];
-
-  // =========================
-  // FILTER FOOD
-  // =========================
+  // ==========================================
+  // FILTER MENU BY CATEGORY
+  // ==========================================
 
   const filteredFoods =
     selectedCategory === "Popular"
       ? foods
       : foods.filter(
-          (food) => food.category === selectedCategory
+          (food) =>
+            food.category === selectedCategory
         );
 
-  // =========================
+  // ==========================================
   // ADD TO CART
-  // =========================
+  // ==========================================
 
   const addToCart = (food) => {
     const existingItem = cart.find(
-      (item) => item.name === food.name
+      (item) => item._id === food._id
     );
 
     let updatedCart;
 
     if (existingItem) {
       updatedCart = cart.map((item) =>
-        item.name === food.name
+        item._id === food._id
           ? {
               ...item,
-              quantity: item.quantity + 1,
+              quantity:
+                Number(item.quantity || 1) + 1,
             }
           : item
       );
@@ -195,14 +104,41 @@ function Menu() {
     );
   };
 
-  // =========================
-  // PAGE
-  // =========================
+  // ==========================================
+  // LOADING
+  // ==========================================
+
+  if (loading) {
+    return (
+      <div className="menu-page">
+        <div className="menu-header">
+          <button
+            className="back-btn"
+            onClick={() => navigate("/")}
+          >
+            ← Back
+          </button>
+
+          <div>
+            <p className="section-label">
+              RESTAURANT
+            </p>
+
+            <h1>Foodie Menu</h1>
+
+            <p>Loading delicious food... 🍔</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ==========================================
+  // MENU PAGE
+  // ==========================================
 
   return (
     <div className="menu-page">
-
-      {/* HEADER */}
       <div className="menu-header">
         <button
           className="back-btn"
@@ -212,7 +148,9 @@ function Menu() {
         </button>
 
         <div>
-          <p className="section-label">RESTAURANT</p>
+          <p className="section-label">
+            RESTAURANT
+          </p>
 
           <h1>Foodie Menu</h1>
 
@@ -222,15 +160,28 @@ function Menu() {
         </div>
       </div>
 
-      {/* CATEGORY BUTTONS */}
+      {/* ==========================================
+          CATEGORIES
+      ========================================== */}
+
       <div className="menu-categories">
+        <button
+          className={
+            selectedCategory === "Popular"
+              ? "active-category"
+              : ""
+          }
+          onClick={() =>
+            setSelectedCategory("Popular")
+          }
+        >
+          Popular
+        </button>
 
         {[
-          "Popular",
-          "Pizza",
-          "Burgers",
-          "Chicken",
-          "Drinks",
+          ...new Set(
+            foods.map((food) => food.category)
+          ),
         ].map((category) => (
           <button
             key={category}
@@ -246,64 +197,76 @@ function Menu() {
             {category}
           </button>
         ))}
-
       </div>
 
-      {/* FOOD SECTION */}
-      <div className="food-section">
+      {/* ==========================================
+          FOOD SECTION
+      ========================================== */}
 
+      <div className="food-section">
         <h2>
           {selectedCategory === "Popular"
             ? "Popular Items"
             : `${selectedCategory} Items`}
         </h2>
 
-        <div className="food-grid">
-
-          {filteredFoods.map((food) => (
-            <div
-              className="food-card"
-              key={food.name}
-            >
-
-              <img
-                src={food.image}
-                alt={food.name}
-              />
-
-              <div className="food-info">
-
-                <h3>{food.name}</h3>
-
-                <p>{food.description}</p>
-
-                <div className="food-bottom">
-
-                  <strong>
-                    ₹{food.price}
-                  </strong>
-
-                  <button
-                    className="add-btn"
-                    onClick={() =>
-                      addToCart(food)
-                    }
-                  >
-                    + Add
-                  </button>
-
-                </div>
-
-              </div>
-
+        {filteredFoods.length === 0 ? (
+          <div className="empty-cart">
+            <div className="empty-cart-icon">
+              🍽️
             </div>
-          ))}
 
-        </div>
+            <h2>No food items found</h2>
 
+            <p>
+              No items are available in this category.
+            </p>
+          </div>
+        ) : (
+          <div className="food-grid">
+            {filteredFoods.map((food) => (
+              <div
+                className="food-card"
+                key={food._id}
+              >
+                <img
+                  src={
+                    food.image ||
+                    "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=600&q=80"
+                  }
+                  alt={food.name}
+                />
+
+                <div className="food-info">
+                  <h3>{food.name}</h3>
+
+                  <p>{food.description}</p>
+
+                  <div className="food-bottom">
+                    <strong>
+                      ₹{food.price}
+                    </strong>
+
+                    <button
+                      className="add-btn"
+                      onClick={() =>
+                        addToCart(food)
+                      }
+                    >
+                      + Add
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* CART */}
+      {/* ==========================================
+          FLOATING CART
+      ========================================== */}
+
       <Link
         to="/cart"
         className="floating-cart"
@@ -311,12 +274,11 @@ function Menu() {
         🛒 View Cart (
         {cart.reduce(
           (total, item) =>
-            total + item.quantity,
+            total + Number(item.quantity || 1),
           0
         )}
         )
       </Link>
-
     </div>
   );
 }

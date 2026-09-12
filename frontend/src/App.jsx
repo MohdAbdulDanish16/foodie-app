@@ -14,6 +14,8 @@ import ProtectedRoute from "./pages/ProtectedRoute";
 import AdminOrders from "./pages/AdminOrders";
 import AdminProtectedRoute from "./pages/AdminProtectedRoute";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminRestaurants from "./pages/AdminRestaurants";
+import AdminMenu from "./pages/AdminMenu";
 import "./App.css";
 
 function Home() {
@@ -392,6 +394,10 @@ function App() {
       <Route path="/admin"element={<AdminProtectedRoute><AdminDashboard /></AdminProtectedRoute>}/>
       {/* Admin Orders */}
       <Route path="/admin/orders"element={<AdminProtectedRoute><AdminOrders /></AdminProtectedRoute>}/>
+
+      <Route path="/admin/restaurants"element={<AdminProtectedRoute><AdminRestaurants /></AdminProtectedRoute>}/>
+
+      <Route path="/admin/menu"element={<AdminProtectedRoute><AdminMenu /></AdminProtectedRoute>}/>
     </Routes>
   );
 }

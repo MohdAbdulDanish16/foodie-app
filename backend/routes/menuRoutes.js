@@ -10,6 +10,7 @@ const router = express.Router();
 // ==========================================
 // ADD MENU ITEM
 // POST /api/menu
+// ADMIN ONLY
 // ==========================================
 
 router.post(
@@ -109,6 +110,7 @@ router.get(
 // ==========================================
 // GET MENU ITEMS FOR ONE RESTAURANT
 // GET /api/menu/restaurant/:restaurantId
+// ADMIN ONLY
 // ==========================================
 
 router.get(
@@ -137,6 +139,7 @@ router.get(
 // ==========================================
 // GET SINGLE MENU ITEM
 // GET /api/menu/:id
+// ADMIN ONLY
 // ==========================================
 
 router.get(
@@ -174,6 +177,7 @@ router.get(
 // ==========================================
 // UPDATE MENU ITEM
 // PATCH /api/menu/:id
+// ADMIN ONLY
 // ==========================================
 
 router.patch(
@@ -260,6 +264,7 @@ router.patch(
 // ==========================================
 // DELETE MENU ITEM
 // DELETE /api/menu/:id
+// ADMIN ONLY
 // ==========================================
 
 router.delete(
