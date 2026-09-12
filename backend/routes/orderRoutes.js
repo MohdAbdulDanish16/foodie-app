@@ -19,57 +19,72 @@ router.post("/", authMiddleware, async (req, res) => {
     } = req.body;
 
     if (
-  !customerName ||
-  !items ||
-  items.length === 0 ||
-  !phone ||
-  !address ||
-  !paymentMethod
-) {
-  return res.status(400).json({
-    message: "All order details are required",
-  });
-}
+      !customerName ||
+      !items ||
+      items.length === 0 ||
+      !phone ||
+      !address ||
+      !paymentMethod
+    ) {
+      return res.status(400).json({
+        message: "All order details are required",
+      });
+    }
 
-if (customerName.trim().length < 2) {
-  return res.status(400).json({
-    message: "Customer name must be at least 2 characters",
-  });
-}
+    if (customerName.trim().length < 2) {
+      return res.status(400).json({
+        message: "Customer name must be at least 2 characters",
+      });
+    }
 
-if (!/^[0-9]{10}$/.test(phone)) {
-  return res.status(400).json({
-    message: "Phone number must contain exactly 10 digits",
-  });
-}
+    if (!/^[0-9]{10}$/.test(phone)) {
+      return res.status(400).json({
+        message: "Phone number must contain exactly 10 digits",
+      });
+    }
 
-if (address.trim().length < 10) {
-  return res.status(400).json({
-    message: "Please enter a complete delivery address",
-  });
-}
+    if (address.trim().length < 10) {
+      return res.status(400).json({
+        message: "Please enter a complete delivery address",
+      });
+    }
 
-const allowedPaymentMethods = [
-  "Cash on Delivery",
-  "UPI",
-  "Credit / Debit Card",
-];
+    const allowedPaymentMethods = [
+      "Cash on Delivery",
+      "UPI",
+      "Credit / Debit Card",
+    ];
 
-if (!allowedPaymentMethods.includes(paymentMethod)) {
-  return res.status(400).json({
-    message: "Invalid payment method",
-  });
-}
+    if (!allowedPaymentMethods.includes(paymentMethod)) {
+      return res.status(400).json({
+        message: "Invalid payment method",
+      });
+    }
 
     const subtotal = items.reduce(
-  (sum, item) =>
-    sum +
-    Number(item.price) * (Number(item.quantity) || 1),
-  0
-);
+      (sum, item) =>
+        sum +
+        Number(item.price) * (Number(item.quantity) || 1),
+      0
+    );
 
-const deliveryFee = 40;
-const totalAmount = subtotal + deliveryFee;
+    const deliveryFee = 40;
+    const totalAmount = subtotal + deliveryFee;
+
+    // ==========================================
+    // MOCK PAYMENT
+    // ==========================================
+    let paymentStatus = "Pending";
+    let transactionId = null;
+
+    if (
+      paymentMethod === "UPI" ||
+      paymentMethod === "Credit / Debit Card"
+    ) {
+      paymentStatus = "Paid";
+
+      transactionId = `MOCK-${paymentMethod === "UPI" ? "UPI" : "CARD"}-${Date.now()}`;
+    }
 
     const order = new Order({
       userId: req.user.userId,
@@ -79,6 +94,8 @@ const totalAmount = subtotal + deliveryFee;
       phone,
       address,
       paymentMethod,
+      paymentStatus,
+      transactionId,
     });
 
     await order.save();

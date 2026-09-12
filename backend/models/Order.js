@@ -14,24 +14,10 @@ const orderSchema = new mongoose.Schema(
       trim: true,
     },
 
-    items: [
-      {
-        name: {
-          type: String,
-          required: true,
-        },
-
-        price: {
-          type: Number,
-          required: true,
-        },
-
-        quantity: {
-          type: Number,
-          required: true,
-        },
-      },
-    ],
+    items: {
+      type: Array,
+      required: true,
+    },
 
     totalAmount: {
       type: Number,
@@ -50,11 +36,39 @@ const orderSchema = new mongoose.Schema(
 
     paymentMethod: {
       type: String,
+      enum: [
+        "Cash on Delivery",
+        "UPI",
+        "Credit / Debit Card",
+      ],
       required: true,
+    },
+
+    paymentStatus: {
+      type: String,
+      enum: [
+        "Pending",
+        "Paid",
+        "Failed",
+      ],
+      default: "Pending",
+    },
+
+    transactionId: {
+      type: String,
+      default: null,
     },
 
     status: {
       type: String,
+      enum: [
+        "Pending",
+        "Confirmed",
+        "Preparing",
+        "Out for Delivery",
+        "Delivered",
+        "Cancelled",
+      ],
       default: "Pending",
     },
   },
