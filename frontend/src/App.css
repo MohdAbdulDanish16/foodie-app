@@ -4959,3 +4959,17 @@ footer p {
   color: #d32f2f;
   border-color: #ffb3b3;
 }
+
+/* ==========================================
+   PAYMENT STATUS
+========================================== */
+
+.payment-paid {
+  color: #16803c;
+  font-weight: 700;
+}
+
+.payment-pending {
+  color: #b77900;
+  font-weight: 700;
+}

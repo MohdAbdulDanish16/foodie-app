@@ -72,6 +72,7 @@ function MyOrders() {
     <div className="my-orders-page">
 
       <div className="my-orders-header">
+
         <Link to="/">
           <button className="back-btn">
             ← Back to Home
@@ -83,6 +84,7 @@ function MyOrders() {
         <p>
           Track and view your Foodie orders
         </p>
+
       </div>
 
       {orders.length === 0 ? (
@@ -118,6 +120,9 @@ function MyOrders() {
             const isCancelled =
               order.status === "Cancelled";
 
+            const isPaid =
+              order.paymentStatus === "Paid";
+
             return (
 
               <div
@@ -130,6 +135,7 @@ function MyOrders() {
                 <div className="order-top">
 
                   <div>
+
                     <h3>
                       Order #{order._id.slice(-6)}
                     </h3>
@@ -139,30 +145,30 @@ function MyOrders() {
                         order.createdAt
                       ).toLocaleString()}
                     </p>
+
                   </div>
 
                   <span
-  className={`order-status ${
-    order.status === "Pending"
-      ? "status-pending"
-      : order.status === "Confirmed"
-      ? "status-confirmed"
-      : order.status === "Preparing"
-      ? "status-preparing"
-      : order.status === "Out for Delivery"
-      ? "status-delivery"
-      : order.status === "Delivered"
-      ? "status-delivered"
-      : order.status === "Cancelled"
-      ? "status-cancelled"
-      : ""
-  }`}
->
+                    className={`order-status ${
+                      order.status === "Pending"
+                        ? "status-pending"
+                        : order.status === "Confirmed"
+                        ? "status-confirmed"
+                        : order.status === "Preparing"
+                        ? "status-preparing"
+                        : order.status === "Out for Delivery"
+                        ? "status-delivery"
+                        : order.status === "Delivered"
+                        ? "status-delivered"
+                        : order.status === "Cancelled"
+                        ? "status-cancelled"
+                        : ""
+                    }`}
+                  >
                     {order.status}
                   </span>
 
                 </div>
-
 
                 {/* Order Tracking */}
 
@@ -219,7 +225,6 @@ function MyOrders() {
 
                 )}
 
-
                 {/* Cancelled Message */}
 
                 {isCancelled && (
@@ -229,7 +234,6 @@ function MyOrders() {
                   </div>
 
                 )}
-
 
                 {/* Items */}
 
@@ -261,7 +265,6 @@ function MyOrders() {
 
                 </div>
 
-
                 {/* Order Details */}
 
                 <div className="order-details">
@@ -272,6 +275,38 @@ function MyOrders() {
                     </strong>{" "}
                     {order.paymentMethod}
                   </p>
+
+                  {/* PAYMENT STATUS */}
+
+                  <p>
+                    <strong>
+                      Payment Status:
+                    </strong>{" "}
+
+                    <span
+                      className={
+                        isPaid
+                          ? "payment-paid"
+                          : "payment-pending"
+                      }
+                    >
+                      {isPaid
+                        ? "✅ Paid"
+                        : "⏳ Pending"}
+                    </span>
+
+                  </p>
+
+                  {/* TRANSACTION ID */}
+
+                  {order.transactionId && (
+                    <p>
+                      <strong>
+                        Transaction ID:
+                      </strong>{" "}
+                      {order.transactionId}
+                    </p>
+                  )}
 
                   <p>
                     <strong>
@@ -288,7 +323,6 @@ function MyOrders() {
                   </p>
 
                 </div>
-
 
                 {/* Total */}
 
