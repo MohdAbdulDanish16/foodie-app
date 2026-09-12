@@ -9,6 +9,7 @@ const router = express.Router();
 // ==========================================
 // CREATE RESTAURANT
 // POST /api/restaurants
+// ADMIN ONLY
 // ==========================================
 
 router.post(
@@ -59,68 +60,64 @@ router.post(
 // ==========================================
 // GET ALL RESTAURANTS
 // GET /api/restaurants
+// PUBLIC
 // ==========================================
 
-router.get(
-  "/",
-  authMiddleware,
-  adminMiddleware,
-  async (req, res) => {
-    try {
-      const restaurants = await Restaurant.find()
-        .populate("ownerId", "name email")
-        .sort({ createdAt: -1 });
+router.get("/", async (req, res) => {
+  try {
+    const restaurants = await Restaurant.find({
+      isActive: true,
+    })
+      .populate("ownerId", "name email")
+      .sort({ createdAt: -1 });
 
-      res.json({
-        restaurants,
-      });
-    } catch (error) {
-      console.log(error);
+    res.json({
+      restaurants,
+    });
+  } catch (error) {
+    console.log(error);
 
-      res.status(500).json({
-        message: "Failed to fetch restaurants",
-      });
-    }
+    res.status(500).json({
+      message: "Failed to fetch restaurants",
+    });
   }
-);
+});
 
 // ==========================================
 // GET SINGLE RESTAURANT
 // GET /api/restaurants/:id
+// PUBLIC
 // ==========================================
 
-router.get(
-  "/:id",
-  authMiddleware,
-  adminMiddleware,
-  async (req, res) => {
-    try {
-      const restaurant = await Restaurant.findById(
-        req.params.id
-      ).populate("ownerId", "name email");
+router.get("/:id", async (req, res) => {
+  try {
+    const restaurant = await Restaurant.findOne({
+      _id: req.params.id,
+      isActive: true,
+    }).populate("ownerId", "name email");
 
-      if (!restaurant) {
-        return res.status(404).json({
-          message: "Restaurant not found",
-        });
-      }
-
-      res.json({
-        restaurant,
-      });
-    } catch (error) {
-      console.log(error);
-
-      res.status(500).json({
-        message: "Failed to fetch restaurant",
+    if (!restaurant) {
+      return res.status(404).json({
+        message: "Restaurant not found",
       });
     }
+
+    res.json({
+      restaurant,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      message: "Failed to fetch restaurant",
+    });
   }
-);
+});
 
 // ==========================================
 // UPDATE RESTAURANT
 // PATCH /api/restaurants/:id
+// ADMIN ONLY
 // ==========================================
 
 router.patch(
@@ -196,6 +193,7 @@ router.patch(
 // ==========================================
 // DELETE RESTAURANT
 // DELETE /api/restaurants/:id
+// ADMIN ONLY
 // ==========================================
 
 router.delete(
