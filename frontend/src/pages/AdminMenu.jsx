@@ -43,15 +43,10 @@ function AdminMenu() {
         return;
       }
 
-      setRestaurants(restaurantData.restaurants);
+      setRestaurants(restaurantData.restaurants || []);
 
       const menuResponse = await fetch(
-        `${API_URL}/api/menu`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        `${API_URL}/api/menu`
       );
 
       const menuData = await menuResponse.json();
@@ -61,7 +56,7 @@ function AdminMenu() {
         return;
       }
 
-      setMenuItems(menuData.menuItems);
+      setMenuItems(menuData.menuItems || []);
     } catch (error) {
       console.log(error);
       alert("❌ Cannot connect to the server.");
@@ -147,7 +142,10 @@ function AdminMenu() {
     setEditingId(item._id);
 
     setFormData({
-      restaurantId: item.restaurantId?._id || item.restaurantId || "",
+      restaurantId:
+        item.restaurantId?._id ||
+        item.restaurantId ||
+        "",
       name: item.name || "",
       description: item.description || "",
       price: item.price || "",
@@ -237,30 +235,66 @@ function AdminMenu() {
   if (loading) {
     return (
       <div className="admin-dashboard-page">
-        <h2>Loading menu...</h2>
+        <div className="admin-dashboard-loading">
+          <div className="admin-loading-spinner"></div>
+
+          <h2>Loading menu...</h2>
+
+          <p>
+            Please wait while we fetch your menu items.
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="admin-dashboard-page">
-      <div className="admin-dashboard-header">
-        <Link to="/admin">
-          <button className="back-btn">
-            ← Back to Dashboard
-          </button>
+    <div className="admin-menu-page">
+
+      {/* HEADER */}
+      <div className="admin-menu-header">
+
+        <Link
+          to="/admin"
+          className="admin-menu-back"
+        >
+          ← Back to Dashboard
         </Link>
 
-        <h1>🍔 Menu Management</h1>
+        <div className="admin-menu-heading">
 
-        <p>
-          Add and manage food items for your restaurants
-        </p>
+          <span>FOODIE ADMIN PANEL</span>
+
+          <h1>Menu Management</h1>
+
+          <p>
+            Add, edit and manage food items across
+            your restaurants.
+          </p>
+
+        </div>
+
       </div>
 
-      <div className="admin-dashboard-actions">
+
+      {/* TOOLBAR */}
+      <div className="admin-menu-toolbar">
+
+        <div className="admin-menu-count">
+
+          <strong>
+            {menuItems.length}
+          </strong>
+
+          <span>
+            Menu Item
+            {menuItems.length !== 1 ? "s" : ""}
+          </span>
+
+        </div>
+
         <button
-          className="admin-dashboard-btn"
+          className="menu-add-btn"
           onClick={() => {
             if (showForm) {
               resetForm();
@@ -271,88 +305,165 @@ function AdminMenu() {
         >
           {showForm
             ? "✖ Close Form"
-            : "➕ Add Menu Item"}
+            : "＋ Add Menu Item"}
         </button>
+
       </div>
 
+
+      {/* FORM */}
       {showForm && (
-        <div className="admin-recent-orders">
-          <div className="admin-section-header">
-            <h2>
-              {editingId
-                ? "✏️ Edit Menu Item"
-                : "➕ Add New Menu Item"}
-            </h2>
+
+        <section className="admin-menu-form-card">
+
+          <div className="admin-menu-form-header">
+
+            <div>
+
+              <span>
+                {editingId
+                  ? "EDIT MENU ITEM"
+                  : "NEW MENU ITEM"}
+              </span>
+
+              <h2>
+                {editingId
+                  ? "Edit Menu Item"
+                  : "Add New Menu Item"}
+              </h2>
+
+            </div>
+
+            {editingId && (
+              <span className="menu-editing-badge">
+                Editing
+              </span>
+            )}
+
           </div>
 
+
           <form
-            className="admin-form"
+            className="menu-premium-form"
             onSubmit={handleSubmit}
           >
-            <select
-              name="restaurantId"
-              value={formData.restaurantId}
-              onChange={handleChange}
-              required
-            >
-              <option value="">
-                Select Restaurant
-              </option>
 
-              {restaurants.map((restaurant) => (
-                <option
-                  key={restaurant._id}
-                  value={restaurant._id}
+            <div className="menu-form-grid">
+
+              <div className="menu-form-group">
+
+                <label>Restaurant</label>
+
+                <select
+                  name="restaurantId"
+                  value={formData.restaurantId}
+                  onChange={handleChange}
+                  required
                 >
-                  {restaurant.name}
-                </option>
-              ))}
-            </select>
 
-            <input
-              type="text"
-              name="name"
-              placeholder="Food Item Name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
+                  <option value="">
+                    Select Restaurant
+                  </option>
 
-            <textarea
-              name="description"
-              placeholder="Food Description"
-              value={formData.description}
-              onChange={handleChange}
-            />
+                  {restaurants.map((restaurant) => (
 
-            <input
-              type="number"
-              name="price"
-              placeholder="Price"
-              min="0"
-              value={formData.price}
-              onChange={handleChange}
-              required
-            />
+                    <option
+                      key={restaurant._id}
+                      value={restaurant._id}
+                    >
+                      {restaurant.name}
+                    </option>
 
-            <input
-              type="text"
-              name="category"
-              placeholder="Category"
-              value={formData.category}
-              onChange={handleChange}
-              required
-            />
+                  ))}
 
-            <input
-              type="text"
-              name="image"
-              placeholder="Food Image URL"
-              value={formData.image}
-              onChange={handleChange}
-            />
+                </select>
 
-            <label>
+              </div>
+
+
+              <div className="menu-form-group">
+
+                <label>Food Item Name</label>
+
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Example: Margherita Pizza"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
+
+              </div>
+
+
+              <div className="menu-form-group">
+
+                <label>Price</label>
+
+                <input
+                  type="number"
+                  name="price"
+                  placeholder="Example: 299"
+                  min="0"
+                  value={formData.price}
+                  onChange={handleChange}
+                  required
+                />
+
+              </div>
+
+
+              <div className="menu-form-group">
+
+                <label>Category</label>
+
+                <input
+                  type="text"
+                  name="category"
+                  placeholder="Example: Pizza"
+                  value={formData.category}
+                  onChange={handleChange}
+                  required
+                />
+
+              </div>
+
+            </div>
+
+
+            <div className="menu-form-group">
+
+              <label>Description</label>
+
+              <textarea
+                name="description"
+                placeholder="Write a short description of the food..."
+                value={formData.description}
+                onChange={handleChange}
+                rows="4"
+              />
+
+            </div>
+
+
+            <div className="menu-form-group">
+
+              <label>Food Image URL</label>
+
+              <input
+                type="text"
+                name="image"
+                placeholder="https://example.com/food.jpg"
+                value={formData.image}
+                onChange={handleChange}
+              />
+
+            </div>
+
+
+            <label className="menu-availability-toggle">
+
               <input
                 type="checkbox"
                 name="isAvailable"
@@ -360,92 +471,166 @@ function AdminMenu() {
                 onChange={handleChange}
               />
 
-              {" "}Available
+              <span>
+                Item is available
+              </span>
+
             </label>
 
-            <button
-              type="submit"
-              className="admin-dashboard-btn"
-            >
-              {editingId
-                ? "💾 Update Menu Item"
-                : "✅ Save Menu Item"}
-            </button>
 
-            {editingId && (
+            <div className="menu-form-actions">
+
               <button
-                type="button"
-                className="admin-delete-btn"
-                onClick={resetForm}
+                type="submit"
+                className="menu-save-btn"
               >
-                ✖ Cancel Edit
+                {editingId
+                  ? "💾 Update Menu Item"
+                  : "✓ Save Menu Item"}
               </button>
-            )}
-          </form>
-        </div>
-      )}
 
-      <div className="admin-recent-orders">
-        <div className="admin-section-header">
-          <h2>🍽️ Menu Items</h2>
+              {editingId && (
 
-          <strong>
-            {menuItems.length} Item
-            {menuItems.length !== 1 ? "s" : ""}
-          </strong>
-        </div>
+                <button
+                  type="button"
+                  className="menu-cancel-btn"
+                  onClick={resetForm}
+                >
+                  Cancel Edit
+                </button>
 
-        {menuItems.length === 0 ? (
-          <div className="empty-cart">
-            <div className="empty-cart-icon">
-              🍔
+              )}
+
             </div>
 
-            <h2>No menu items yet</h2>
+          </form>
+
+        </section>
+
+      )}
+
+
+      {/* MENU LIST */}
+      <section className="admin-menu-list-section">
+
+        <div className="admin-menu-list-header">
+
+          <div>
+
+            <span>YOUR MENU</span>
+
+            <h2>Menu Items</h2>
+
+          </div>
+
+          <p>
+            {menuItems.length} total
+          </p>
+
+        </div>
+
+
+        {menuItems.length === 0 ? (
+
+          <div className="menu-empty-state">
+
+            <div>🍔</div>
+
+            <h3>No menu items yet</h3>
 
             <p>
-              Add your first menu item using the button above.
+              Add your first food item to get started.
             </p>
+
           </div>
+
         ) : (
-          <div className="recent-orders-list">
+
+          <div className="menu-premium-list">
+
             {menuItems.map((item) => (
+
               <div
-                className="recent-order-card"
+                className="menu-premium-card"
                 key={item._id}
               >
-                <div>
-                  <h3>{item.name}</h3>
 
-                  <p>
-                    🏪{" "}
-                    {item.restaurantId?.name ||
-                      "Restaurant"}
-                  </p>
+                <div className="menu-card-image">
 
-                  <p>
-                    {item.category}
-                    {" • "}
-                    ₹{item.price}
-                  </p>
+                  {item.image ? (
 
-                  <p>
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                    />
+
+                  ) : (
+
+                    <span>🍔</span>
+
+                  )}
+
+                </div>
+
+
+                <div className="menu-card-info">
+
+                  <div className="menu-card-title-row">
+
+                    <div>
+
+                      <h3>
+                        {item.name}
+                      </h3>
+
+                      <p className="menu-card-restaurant">
+                        🏪{" "}
+                        {item.restaurantId?.name ||
+                          "Restaurant"}
+                      </p>
+
+                    </div>
+
+                    <span
+                      className={
+                        item.isAvailable
+                          ? "menu-available-badge"
+                          : "menu-unavailable-badge"
+                      }
+                    >
+                      {item.isAvailable
+                        ? "Available"
+                        : "Unavailable"}
+                    </span>
+
+                  </div>
+
+
+                  <div className="menu-card-price-row">
+
+                    <strong>
+                      ₹{Number(item.price || 0).toLocaleString("en-IN")}
+                    </strong>
+
+                    <span>
+                      {item.category}
+                    </span>
+
+                  </div>
+
+
+                  <p className="menu-card-description">
                     {item.description ||
                       "No description added"}
                   </p>
+
                 </div>
 
-                <div>
-                  <span className="recent-order-status">
-                    {item.isAvailable
-                      ? "Available"
-                      : "Unavailable"}
-                  </span>
 
-                  <br />
+                <div className="menu-card-actions">
 
                   <button
-                    className="admin-dashboard-btn"
+                    className="menu-edit-btn"
                     onClick={() =>
                       editMenuItem(item)
                     }
@@ -453,35 +638,59 @@ function AdminMenu() {
                     ✏️ Edit
                   </button>
 
-                  <br />
-
                   <button
-                    className="admin-dashboard-btn"
+                    className="menu-toggle-btn"
                     onClick={() =>
                       toggleAvailability(item)
                     }
                   >
                     {item.isAvailable
-                      ? "❌ Disable"
-                      : "✅ Enable"}
+                      ? "Disable"
+                      : "Enable"}
                   </button>
 
-                  <br />
-
                   <button
-                    className="admin-delete-btn"
+                    className="menu-delete-btn"
                     onClick={() =>
                       deleteMenuItem(item._id)
                     }
                   >
                     🗑️ Delete
                   </button>
+
                 </div>
+
               </div>
+
             ))}
+
           </div>
+
         )}
+
+      </section>
+
+
+      {/* SECURITY NOTE */}
+      <div className="menu-admin-note">
+
+        <span>🔐</span>
+
+        <div>
+
+          <strong>
+            Protected Admin Area
+          </strong>
+
+          <p>
+            Only authorized Foodie administrators
+            can manage menu items.
+          </p>
+
+        </div>
+
       </div>
+
     </div>
   );
 }

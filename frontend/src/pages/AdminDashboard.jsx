@@ -29,7 +29,7 @@ function AdminDashboard() {
           return;
         }
 
-        setOrders(data.orders);
+        setOrders(data.orders || []);
       } catch (error) {
         console.log(error);
         alert("❌ Cannot connect to the server.");
@@ -52,123 +52,374 @@ function AdminDashboard() {
   ).length;
 
   const totalRevenue = orders.reduce(
-    (sum, order) => sum + order.totalAmount,
+    (sum, order) => sum + Number(order.totalAmount || 0),
     0
   );
+
+  const activeOrders = orders.filter(
+    (order) =>
+      order.status !== "Delivered" &&
+      order.status !== "Cancelled"
+  ).length;
+
+  const getStatusClass = (status) => {
+    if (status === "Delivered") return "status-delivered";
+    if (status === "Cancelled") return "status-cancelled";
+    if (status === "Preparing") return "status-preparing";
+    if (status === "Out for Delivery") return "status-delivery";
+    if (status === "Confirmed") return "status-confirmed";
+
+    return "status-pending";
+  };
 
   if (loading) {
     return (
       <div className="admin-dashboard-page">
-        <h2>Loading dashboard...</h2>
+        <div className="admin-dashboard-loading">
+          <div className="admin-loading-spinner"></div>
+          <h2>Loading dashboard...</h2>
+          <p>Please wait while we fetch your latest orders.</p>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="admin-dashboard-page">
-      <div className="admin-dashboard-header">
-        <Link to="/">
-          <button className="back-btn">
-            ← Back to Home
-          </button>
+
+      {/* HEADER */}
+      <div className="admin-dashboard-top">
+
+        <Link to="/" className="admin-back-link">
+          ← Back to Home
         </Link>
 
-        <h1>👨‍💼 Admin Dashboard</h1>
-        <p>Manage and monitor your Foodie application</p>
+        <div className="admin-dashboard-heading">
+          <span className="admin-dashboard-eyebrow">
+            FOODIE ADMIN PANEL
+          </span>
+
+          <h1>Admin Dashboard</h1>
+
+          <p>
+            Manage your food ordering application and monitor
+            customer orders.
+          </p>
+        </div>
+
       </div>
 
-      <div className="admin-stats">
-        <div className="admin-stat-card">
-          <div className="admin-stat-icon">📦</div>
-          <h3>Total Orders</h3>
-          <strong>{totalOrders}</strong>
+
+      {/* STATS */}
+      <div className="admin-dashboard-stats">
+
+        <div className="dashboard-stat-card">
+          <div className="dashboard-stat-top">
+            <div className="dashboard-stat-icon">
+              📦
+            </div>
+
+            <span className="dashboard-stat-small">
+              ALL TIME
+            </span>
+          </div>
+
+          <p>Total Orders</p>
+
+          <h2>{totalOrders}</h2>
+
+          <span className="dashboard-stat-description">
+            Orders received
+          </span>
         </div>
 
-        <div className="admin-stat-card">
-          <div className="admin-stat-icon">⏳</div>
-          <h3>Pending Orders</h3>
-          <strong>{pendingOrders}</strong>
+
+        <div className="dashboard-stat-card">
+          <div className="dashboard-stat-top">
+            <div className="dashboard-stat-icon">
+              ⏳
+            </div>
+
+            <span className="dashboard-stat-small">
+              ATTENTION
+            </span>
+          </div>
+
+          <p>Pending Orders</p>
+
+          <h2>{pendingOrders}</h2>
+
+          <span className="dashboard-stat-description">
+            Waiting for confirmation
+          </span>
         </div>
 
-        <div className="admin-stat-card">
-          <div className="admin-stat-icon">✅</div>
-          <h3>Delivered Orders</h3>
-          <strong>{deliveredOrders}</strong>
+
+        <div className="dashboard-stat-card">
+          <div className="dashboard-stat-top">
+            <div className="dashboard-stat-icon">
+              🚚
+            </div>
+
+            <span className="dashboard-stat-small">
+              ACTIVE
+            </span>
+          </div>
+
+          <p>Active Orders</p>
+
+          <h2>{activeOrders}</h2>
+
+          <span className="dashboard-stat-description">
+            Currently processing
+          </span>
         </div>
 
-        <div className="admin-stat-card">
-          <div className="admin-stat-icon">💰</div>
-          <h3>Total Revenue</h3>
-          <strong>₹{totalRevenue}</strong>
+
+        <div className="dashboard-stat-card">
+          <div className="dashboard-stat-top">
+            <div className="dashboard-stat-icon">
+              💰
+            </div>
+
+            <span className="dashboard-stat-small">
+              REVENUE
+            </span>
+          </div>
+
+          <p>Total Revenue</p>
+
+          <h2>
+            ₹{totalRevenue.toLocaleString("en-IN")}
+          </h2>
+
+          <span className="dashboard-stat-description">
+            From all orders
+          </span>
         </div>
+
       </div>
 
-      <div className="admin-dashboard-actions">
-  <Link to="/admin/orders">
-    <button className="admin-dashboard-btn">
-      📦 Manage Orders
-    </button>
-  </Link>
 
-  <Link to="/admin/restaurants">
-    <button className="admin-dashboard-btn">
-      🍽️ Manage Restaurants
-    </button>
-  </Link>
+      {/* QUICK ACTIONS */}
+      <section className="admin-quick-section">
 
-  <Link to="/admin/menu">
-    <button className="admin-dashboard-btn">
-      🍔 Manage Menu
-    </button>
-  </Link>
-</div>
+        <div className="admin-section-title">
+          <span>MANAGEMENT</span>
+          <h2>Quick Actions</h2>
+          <p>
+            Access the main areas of your Foodie admin panel.
+          </p>
+        </div>
 
-      <div className="admin-recent-orders">
-        <div className="admin-section-header">
-          <h2>📋 Recent Orders</h2>
 
-          <Link to="/admin/orders">
-            View All →
+        <div className="admin-quick-grid">
+
+          <Link
+            to="/admin/orders"
+            className="admin-quick-card"
+          >
+            <div className="admin-quick-icon">
+              📦
+            </div>
+
+            <div className="admin-quick-content">
+              <h3>Manage Orders</h3>
+
+              <p>
+                View, update and manage customer orders.
+              </p>
+
+              <span>
+                Open Orders →
+              </span>
+            </div>
           </Link>
+
+
+          <Link
+            to="/admin/restaurants"
+            className="admin-quick-card"
+          >
+            <div className="admin-quick-icon">
+              🍽️
+            </div>
+
+            <div className="admin-quick-content">
+              <h3>Manage Restaurants</h3>
+
+              <p>
+                Add, edit and manage restaurant information.
+              </p>
+
+              <span>
+                Open Restaurants →
+              </span>
+            </div>
+          </Link>
+
+
+          <Link
+            to="/admin/menu"
+            className="admin-quick-card"
+          >
+            <div className="admin-quick-icon">
+              🍔
+            </div>
+
+            <div className="admin-quick-content">
+              <h3>Manage Menu</h3>
+
+              <p>
+                Add and update food items and availability.
+              </p>
+
+              <span>
+                Open Menu →
+              </span>
+            </div>
+          </Link>
+
         </div>
+
+      </section>
+
+
+      {/* RECENT ORDERS */}
+      <section className="admin-recent-section">
+
+        <div className="admin-section-title admin-recent-heading">
+
+          <div>
+            <span>ACTIVITY</span>
+
+            <h2>Recent Orders</h2>
+
+            <p>
+              Latest customer orders from your Foodie application.
+            </p>
+          </div>
+
+          <Link
+            to="/admin/orders"
+            className="admin-view-all-btn"
+          >
+            View All Orders →
+          </Link>
+
+        </div>
+
 
         {orders.length === 0 ? (
-          <div className="empty-cart">
-            <div className="empty-cart-icon">📦</div>
-            <h2>No orders yet</h2>
-            <p>Customer orders will appear here.</p>
+
+          <div className="admin-dashboard-empty">
+
+            <div className="admin-empty-icon">
+              📦
+            </div>
+
+            <h3>No orders yet</h3>
+
+            <p>
+              Customer orders will appear here once they
+              place an order.
+            </p>
+
           </div>
+
         ) : (
-          <div className="recent-orders-list">
+
+          <div className="admin-recent-orders">
+
             {orders.slice(0, 5).map((order) => (
+
               <div
-                className="recent-order-card"
+                className="admin-recent-order"
                 key={order._id}
               >
-                <div>
-                  <h3>
-                    Order #{order._id.slice(-6)}
-                  </h3>
 
-                  <p>
-                    {order.userId?.name || "Customer"}
-                  </p>
+                <div className="recent-order-main">
+
+                  <div className="recent-order-icon">
+                    📦
+                  </div>
+
+                  <div>
+
+                    <h3>
+                      Order #{order._id.slice(-6).toUpperCase()}
+                    </h3>
+
+                    <p>
+                      {order.userId?.name || "Customer"}
+                    </p>
+
+                  </div>
+
                 </div>
 
-                <div>
+
+                <div className="recent-order-middle">
+
+                  <span>
+                    {order.items?.length || 0} item
+                    {(order.items?.length || 0) !== 1
+                      ? "s"
+                      : ""}
+                  </span>
+
+                  <small>
+                    {order.paymentMethod || "Payment"}
+                  </small>
+
+                </div>
+
+
+                <div className="recent-order-right">
+
                   <strong>
-                    ₹{order.totalAmount}
+                    ₹{Number(
+                      order.totalAmount || 0
+                    ).toLocaleString("en-IN")}
                   </strong>
 
-                  <span className="recent-order-status">
+                  <span
+                    className={`admin-order-status ${getStatusClass(
+                      order.status
+                    )}`}
+                  >
                     {order.status}
                   </span>
+
                 </div>
+
               </div>
+
             ))}
+
           </div>
+
         )}
+
+      </section>
+
+
+      {/* FOOTER NOTE */}
+      <div className="admin-dashboard-note">
+
+        <span>🔐</span>
+
+        <div>
+          <strong>Admin Area</strong>
+
+          <p>
+            This dashboard is protected and only accessible
+            to authorized Foodie administrators.
+          </p>
+        </div>
+
       </div>
+
     </div>
   );
 }

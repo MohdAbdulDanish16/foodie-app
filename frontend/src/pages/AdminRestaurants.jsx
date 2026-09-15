@@ -41,7 +41,7 @@ function AdminRestaurants() {
         return;
       }
 
-      setRestaurants(data.restaurants);
+      setRestaurants(data.restaurants || []);
     } catch (error) {
       console.log(error);
       alert("❌ Cannot connect to the server.");
@@ -131,8 +131,7 @@ function AdminRestaurants() {
       description: restaurant.description || "",
       image: restaurant.image || "",
       cuisine: restaurant.cuisine || "",
-      deliveryTime:
-        restaurant.deliveryTime || "25-35 min",
+      deliveryTime: restaurant.deliveryTime || "25-35 min",
       rating: restaurant.rating || 0,
       isActive: restaurant.isActive ?? true,
     });
@@ -186,30 +185,58 @@ function AdminRestaurants() {
   if (loading) {
     return (
       <div className="admin-dashboard-page">
-        <h2>Loading restaurants...</h2>
+        <div className="admin-dashboard-loading">
+          <div className="admin-loading-spinner"></div>
+          <h2>Loading restaurants...</h2>
+          <p>Please wait while we fetch restaurant data.</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="admin-dashboard-page">
-      <div className="admin-dashboard-header">
-        <Link to="/admin">
-          <button className="back-btn">
-            ← Back to Dashboard
-          </button>
+    <div className="admin-restaurant-page">
+
+      {/* HEADER */}
+      <div className="admin-restaurant-header">
+
+        <Link
+          to="/admin"
+          className="admin-restaurant-back"
+        >
+          ← Back to Dashboard
         </Link>
 
-        <h1>🍽️ Restaurant Management</h1>
+        <div className="admin-restaurant-heading">
+          <span>FOODIE ADMIN PANEL</span>
 
-        <p>
-          Add and manage restaurants in your Foodie application
-        </p>
+          <h1>Restaurant Management</h1>
+
+          <p>
+            Add, edit and manage restaurants available
+            on your Foodie application.
+          </p>
+        </div>
+
       </div>
 
-      <div className="admin-dashboard-actions">
+
+      {/* TOP ACTION */}
+      <div className="admin-restaurant-toolbar">
+
+        <div>
+          <strong>
+            {restaurants.length}
+          </strong>
+
+          <span>
+            Restaurant
+            {restaurants.length !== 1 ? "s" : ""}
+          </span>
+        </div>
+
         <button
-          className="admin-dashboard-btn"
+          className="restaurant-add-btn"
           onClick={() => {
             if (showForm) {
               resetForm();
@@ -220,77 +247,135 @@ function AdminRestaurants() {
         >
           {showForm
             ? "✖ Close Form"
-            : "➕ Add Restaurant"}
+            : "＋ Add Restaurant"}
         </button>
+
       </div>
 
+
+      {/* FORM */}
       {showForm && (
-        <div className="admin-recent-orders">
-          <div className="admin-section-header">
-            <h2>
-              {editingId
-                ? "✏️ Edit Restaurant"
-                : "➕ Add New Restaurant"}
-            </h2>
+        <section className="admin-restaurant-form-card">
+
+          <div className="admin-restaurant-form-header">
+
+            <div>
+              <span>
+                {editingId
+                  ? "EDIT RESTAURANT"
+                  : "NEW RESTAURANT"}
+              </span>
+
+              <h2>
+                {editingId
+                  ? "Edit Restaurant"
+                  : "Add New Restaurant"}
+              </h2>
+            </div>
+
+            {editingId && (
+              <span className="editing-badge">
+                Editing
+              </span>
+            )}
+
           </div>
 
+
           <form
-            className="admin-form"
+            className="restaurant-premium-form"
             onSubmit={handleSubmit}
           >
-            <input
-              type="text"
-              name="name"
-              placeholder="Restaurant Name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
 
-            <textarea
-              name="description"
-              placeholder="Restaurant Description"
-              value={formData.description}
-              onChange={handleChange}
-            />
+            <div className="restaurant-form-grid">
 
-            <input
-              type="text"
-              name="image"
-              placeholder="Restaurant Image URL"
-              value={formData.image}
-              onChange={handleChange}
-            />
+              <div className="restaurant-form-group">
+                <label>Restaurant Name</label>
 
-            <input
-              type="text"
-              name="cuisine"
-              placeholder="Cuisine (Example: Pizza • Italian)"
-              value={formData.cuisine}
-              onChange={handleChange}
-              required
-            />
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Example: Pizza Palace"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
 
-            <input
-              type="text"
-              name="deliveryTime"
-              placeholder="Delivery Time"
-              value={formData.deliveryTime}
-              onChange={handleChange}
-            />
 
-            <input
-              type="number"
-              name="rating"
-              placeholder="Rating"
-              min="0"
-              max="5"
-              step="0.1"
-              value={formData.rating}
-              onChange={handleChange}
-            />
+              <div className="restaurant-form-group">
+                <label>Cuisine</label>
 
-            <label>
+                <input
+                  type="text"
+                  name="cuisine"
+                  placeholder="Example: Pizza • Italian"
+                  value={formData.cuisine}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+
+              <div className="restaurant-form-group">
+                <label>Delivery Time</label>
+
+                <input
+                  type="text"
+                  name="deliveryTime"
+                  placeholder="Example: 25-35 min"
+                  value={formData.deliveryTime}
+                  onChange={handleChange}
+                />
+              </div>
+
+
+              <div className="restaurant-form-group">
+                <label>Rating</label>
+
+                <input
+                  type="number"
+                  name="rating"
+                  placeholder="0 - 5"
+                  min="0"
+                  max="5"
+                  step="0.1"
+                  value={formData.rating}
+                  onChange={handleChange}
+                />
+              </div>
+
+            </div>
+
+
+            <div className="restaurant-form-group">
+              <label>Description</label>
+
+              <textarea
+                name="description"
+                placeholder="Write a short restaurant description..."
+                value={formData.description}
+                onChange={handleChange}
+                rows="4"
+              />
+            </div>
+
+
+            <div className="restaurant-form-group">
+              <label>Restaurant Image URL</label>
+
+              <input
+                type="text"
+                name="image"
+                placeholder="https://example.com/restaurant.jpg"
+                value={formData.image}
+                onChange={handleChange}
+              />
+            </div>
+
+
+            <label className="restaurant-active-toggle">
+
               <input
                 type="checkbox"
                 name="isActive"
@@ -298,86 +383,155 @@ function AdminRestaurants() {
                 onChange={handleChange}
               />
 
-              {" "}Restaurant Active
+              <span>
+                Restaurant is active
+              </span>
+
             </label>
 
-            <button
-              type="submit"
-              className="admin-dashboard-btn"
-            >
-              {editingId
-                ? "💾 Update Restaurant"
-                : "✅ Save Restaurant"}
-            </button>
 
-            {editingId && (
+            <div className="restaurant-form-actions">
+
               <button
-                type="button"
-                className="admin-delete-btn"
-                onClick={resetForm}
+                type="submit"
+                className="restaurant-save-btn"
               >
-                ✖ Cancel Edit
+                {editingId
+                  ? "💾 Update Restaurant"
+                  : "✓ Save Restaurant"}
               </button>
-            )}
+
+              {editingId && (
+                <button
+                  type="button"
+                  className="restaurant-cancel-btn"
+                  onClick={resetForm}
+                >
+                  Cancel Edit
+                </button>
+              )}
+
+            </div>
+
           </form>
-        </div>
+
+        </section>
       )}
 
-      <div className="admin-recent-orders">
-        <div className="admin-section-header">
-          <h2>🏪 Restaurants</h2>
 
-          <strong>
-            {restaurants.length} Restaurant
-            {restaurants.length !== 1 ? "s" : ""}
-          </strong>
+      {/* RESTAURANTS */}
+      <section className="admin-restaurant-list-section">
+
+        <div className="admin-restaurant-list-header">
+
+          <div>
+            <span>YOUR RESTAURANTS</span>
+
+            <h2>Restaurant List</h2>
+          </div>
+
+          <p>
+            {restaurants.length} total
+          </p>
+
         </div>
 
-        {restaurants.length === 0 ? (
-          <div className="empty-cart">
-            <div className="empty-cart-icon">🍽️</div>
 
-            <h2>No restaurants yet</h2>
+        {restaurants.length === 0 ? (
+
+          <div className="restaurant-empty-state">
+
+            <div>🍽️</div>
+
+            <h3>No restaurants yet</h3>
 
             <p>
-              Add your first restaurant using the button above.
+              Add your first restaurant to get started.
             </p>
+
           </div>
+
         ) : (
-          <div className="recent-orders-list">
+
+          <div className="restaurant-premium-list">
+
             {restaurants.map((restaurant) => (
+
               <div
-                className="recent-order-card"
+                className="restaurant-premium-card"
                 key={restaurant._id}
               >
-                <div>
-                  <h3>{restaurant.name}</h3>
 
-                  <p>{restaurant.cuisine}</p>
+                <div className="restaurant-card-image">
 
-                  <p>
-                    ⭐ {restaurant.rating}
-                    {" • "}
-                    {restaurant.deliveryTime}
-                  </p>
+                  {restaurant.image ? (
+                    <img
+                      src={restaurant.image}
+                      alt={restaurant.name}
+                    />
+                  ) : (
+                    <span>🍽️</span>
+                  )}
 
-                  <p>
+                </div>
+
+
+                <div className="restaurant-card-info">
+
+                  <div className="restaurant-card-title-row">
+
+                    <div>
+
+                      <h3>
+                        {restaurant.name}
+                      </h3>
+
+                      <p className="restaurant-cuisine">
+                        {restaurant.cuisine}
+                      </p>
+
+                    </div>
+
+                    <span
+                      className={
+                        restaurant.isActive
+                          ? "restaurant-active-badge"
+                          : "restaurant-inactive-badge"
+                      }
+                    >
+                      {restaurant.isActive
+                        ? "Active"
+                        : "Inactive"}
+                    </span>
+
+                  </div>
+
+
+                  <p className="restaurant-description">
                     {restaurant.description ||
                       "No description added"}
                   </p>
+
+
+                  <div className="restaurant-meta">
+
+                    <span>
+                      ⭐ {restaurant.rating}
+                    </span>
+
+                    <span>
+                      🕒 {restaurant.deliveryTime}
+                    </span>
+
+                  </div>
+
                 </div>
 
-                <div>
-                  <span className="recent-order-status">
-                    {restaurant.isActive
-                      ? "Active"
-                      : "Inactive"}
-                  </span>
 
-                  <br />
+                <div className="restaurant-card-actions">
 
                   <button
-                    className="admin-dashboard-btn"
+                    className="restaurant-edit-btn"
                     onClick={() =>
                       editRestaurant(restaurant)
                     }
@@ -385,22 +539,44 @@ function AdminRestaurants() {
                     ✏️ Edit
                   </button>
 
-                  <br />
-
                   <button
-                    className="admin-delete-btn"
+                    className="restaurant-delete-btn"
                     onClick={() =>
                       deleteRestaurant(restaurant._id)
                     }
                   >
                     🗑️ Delete
                   </button>
+
                 </div>
+
               </div>
+
             ))}
+
           </div>
+
         )}
+
+      </section>
+
+
+      {/* SECURITY NOTE */}
+      <div className="restaurant-admin-note">
+
+        <span>🔐</span>
+
+        <div>
+          <strong>Protected Admin Area</strong>
+
+          <p>
+            Only authorized Foodie administrators can
+            add, edit or delete restaurants.
+          </p>
+        </div>
+
       </div>
+
     </div>
   );
 }

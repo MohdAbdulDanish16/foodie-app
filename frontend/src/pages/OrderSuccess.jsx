@@ -1,51 +1,119 @@
-import { useNavigate } from "react-router-dom";
-import "../App.css";
+import { Link } from "react-router-dom";
 
 function OrderSuccess() {
-  const navigate = useNavigate();
-
   return (
-    <div className="success-page">
-      <div className="success-card">
+    <div className="order-success-page">
+      <div className="order-success-container">
 
-        <div className="success-icon">
-          ✓
+        <div className="order-success-header">
+          <div className="success-animation">
+            <div className="success-circle">
+              <span>✓</span>
+            </div>
+          </div>
+
+          <span className="order-success-eyebrow">
+            ORDER CONFIRMED
+          </span>
+
+          <h1>Your Order is Confirmed!</h1>
+
+          <p>
+            Thank you for ordering with Foodie. We're preparing
+            your delicious meal.
+          </p>
         </div>
 
-        <h1>Order Placed Successfully!</h1>
+        <section className="order-tracking-card">
+          <div className="tracking-header">
+            <div>
+              <span className="tracking-label">
+                ORDER TRACKING
+              </span>
 
-        <p className="success-main-message">
-          Thank you for ordering with Foodie 🎉
-        </p>
+              <h2>What's Next?</h2>
+            </div>
+          </div>
 
-        <p className="success-sub-message">
-          Your delicious food is being prepared.
-          You can track your order from My Orders.
-        </p>
+          <div className="order-timeline">
 
-        <div className="success-actions">
+            <div className="timeline-step completed">
+              <div className="timeline-indicator">
+                ✓
+              </div>
 
-          <button
-            className="track-order-btn"
-            onClick={() => navigate("/my-orders")}
+              <div className="timeline-content">
+                <strong>Order Confirmed</strong>
+                <span>We've received your order</span>
+              </div>
+            </div>
+
+            <div className="timeline-step current">
+              <div className="timeline-indicator">
+                👨‍🍳
+              </div>
+
+              <div className="timeline-content">
+                <strong>Preparing</strong>
+                <span>
+                  Restaurant will prepare your food
+                </span>
+              </div>
+            </div>
+
+            <div className="timeline-step">
+              <div className="timeline-indicator">
+                🛵
+              </div>
+
+              <div className="timeline-content">
+                <strong>On the Way</strong>
+                <span>
+                  Your food will be delivered to you
+                </span>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <div className="order-success-actions">
+          <Link
+            to="/my-orders"
+            className="order-primary-btn"
           >
-            📦 Track My Order
-          </button>
+            Track My Order
+            <span>→</span>
+          </Link>
 
-          <button
-            className="browse-menu-btn"
-            onClick={() => navigate("/menu")}
+          <Link
+            to="/menu"
+            className="order-secondary-btn"
           >
-            🍔 Order More Food
-          </button>
+            Order More Food
+          </Link>
 
-          <button
-            className="home-btn"
-            onClick={() => navigate("/")}
+          <Link
+            to="/"
+            className="order-secondary-btn"
           >
-            🏠 Go to Home
-          </button>
+            Back to Home
+          </Link>
+        </div>
 
+        <div className="order-success-footer">
+          <div>🔒</div>
+
+          <div>
+            <strong>
+              Your order is being handled securely
+            </strong>
+
+            <p>
+              Thank you for choosing Foodie. We hope you have
+              a delicious experience!
+            </p>
+          </div>
         </div>
 
       </div>
