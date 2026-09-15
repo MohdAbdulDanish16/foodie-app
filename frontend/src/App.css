@@ -10691,3 +10691,348 @@ footer p {
   color: #888;
   font-size: 10px;
 }
+
+/* =========================================================
+   FINAL RESPONSIVE NAVBAR
+   ========================================================= */
+
+/* More / Three Dot Button */
+.more-menu-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.more-menu-btn {
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: #1f2937;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.more-menu-btn:hover {
+  background: #fff1eb;
+  color: #ff5722;
+}
+
+/* Three Dot Dropdown */
+.more-menu-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 250px;
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 16px;
+  padding: 8px;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  animation: moreMenuShow 0.18s ease;
+}
+
+@keyframes moreMenuShow {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.more-menu-item {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: #1f2937;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.more-menu-item:hover {
+  background: #fff3ee;
+  color: #ff5722;
+}
+
+.more-menu-item span:first-child {
+  width: 24px;
+  text-align: center;
+  font-size: 17px;
+}
+
+.more-menu-user {
+  margin: 4px 0;
+  padding: 12px;
+  border-top: 1px solid #eeeeee;
+  border-bottom: 1px solid #eeeeee;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.more-menu-user > span {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #fff1eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.more-menu-user div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.more-menu-user strong {
+  font-size: 14px;
+  color: #1f2937;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.more-menu-user small {
+  font-size: 11px;
+  color: #777;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.logout-menu-item {
+  color: #dc2626;
+}
+
+.logout-menu-item:hover {
+  background: #fff1f1;
+  color: #dc2626;
+}
+
+
+/* =========================================================
+   DESKTOP NAVBAR
+   ========================================================= */
+
+.navbar {
+  position: relative;
+  min-height: 72px;
+  padding: 10px 5%;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-sizing: border-box;
+  flex-wrap: nowrap;
+}
+
+.logo {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex: 1;
+  white-space: nowrap;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+
+/* =========================================================
+   TABLET / RESTORE DOWN
+   ========================================================= */
+
+@media (max-width: 1000px) {
+
+  .navbar {
+    padding: 10px 3%;
+    gap: 12px;
+  }
+
+  .logo {
+    font-size: 25px;
+  }
+
+  .nav-links {
+    gap: 12px;
+  }
+
+  .nav-links a {
+    font-size: 14px;
+  }
+
+  .nav-actions {
+    gap: 5px;
+  }
+
+  .cart-btn {
+    padding: 10px 13px;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  .navbar {
+    width: 100%;
+    min-height: 64px;
+    height: 64px;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: nowrap;
+    box-sizing: border-box;
+  }
+
+  /* Logo stays on the left */
+  .logo {
+    width: auto;
+    flex: 1;
+    text-align: left;
+    font-size: 24px;
+    line-height: 1;
+  }
+
+  /* Hide Home / Restaurants / About / Contact */
+  .nav-links {
+    display: none !important;
+  }
+
+  /* Cart + Three Dot on right */
+  .nav-actions {
+    width: auto;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+    flex-shrink: 0;
+    flex-wrap: nowrap;
+  }
+
+  .user-menu {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    order: 2;
+  }
+
+  /* Cart */
+  .nav-actions > a:last-child {
+    order: 1;
+  }
+
+  .cart-btn {
+    min-width: 48px;
+    height: 42px;
+    padding: 0 12px;
+    border-radius: 12px;
+    font-size: 14px;
+  }
+
+  /* Three dots */
+  .more-menu-btn {
+    width: 42px;
+    height: 42px;
+    font-size: 28px;
+  }
+
+  /* Dropdown stays inside screen */
+  .more-menu-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 235px;
+    max-width: calc(100vw - 32px);
+  }
+
+  /* Login + Cart */
+  .login-btn {
+    height: 42px;
+    padding: 0 14px;
+    border-radius: 12px;
+  }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 420px) {
+
+  .navbar {
+    padding: 8px 12px;
+  }
+
+  .logo {
+    font-size: 22px;
+  }
+
+  .cart-btn {
+    font-size: 0;
+    width: 42px;
+    min-width: 42px;
+    padding: 0;
+  }
+
+  .cart-btn::first-letter {
+    font-size: 18px;
+  }
+
+  .more-menu-dropdown {
+    width: 230px;
+  }
+
+}

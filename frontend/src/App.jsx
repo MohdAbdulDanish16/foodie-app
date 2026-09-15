@@ -24,6 +24,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 function Home() {
   const [search, setSearch] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const [restaurants, setRestaurants] = useState([]);
   const [loadingRestaurants, setLoadingRestaurants] =
@@ -70,6 +71,29 @@ function Home() {
     fetchRestaurants();
   }, []);
 
+  useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (
+      menuOpen &&
+      !event.target.closest(".more-menu-wrapper")
+    ) {
+      setMenuOpen(false);
+    }
+  };
+
+  document.addEventListener(
+    "mousedown",
+    handleClickOutside
+  );
+
+  return () => {
+    document.removeEventListener(
+      "mousedown",
+      handleClickOutside
+    );
+  };
+}, [menuOpen]);
+
   const filteredRestaurants = restaurants.filter(
     (restaurant) => {
       const searchText = search.toLowerCase();
@@ -84,6 +108,18 @@ function Home() {
       );
     }
   );
+
+  const handleLogout = () => {
+    localStorage.removeItem("foodieLoggedIn");
+    localStorage.removeItem("foodieToken");
+    localStorage.removeItem("foodieCurrentUser");
+
+    setMenuOpen(false);
+
+    alert("👋 Logged out successfully!");
+
+    window.location.href = "/";
+  };
 
   return (
     <div className="app">
@@ -116,50 +152,76 @@ function Home() {
           {isLoggedIn ? (
             <div className="user-menu">
 
-              {currentUser?.role === "admin" && (
-                <Link
-                  to="/admin"
-                  className="admin-orders-link"
+              {/* Three Dot Menu */}
+              <div className="more-menu-wrapper">
+
+                <button
+                  type="button"
+                  className="more-menu-btn"
+                  aria-label="Open menu"
+                  aria-expanded={menuOpen}
+                  onClick={() =>
+                    setMenuOpen(!menuOpen)
+                  }
                 >
-                  👨‍💼 Admin
-                </Link>
-              )}
+                  ⋮
+                </button>
 
-              <Link
-                to="/my-orders"
-                className="my-orders-link"
-              >
-                📦 My Orders
-              </Link>
+                {menuOpen && (
+                  <div className="more-menu-dropdown">
 
-              <span className="user-welcome">
-                👤 {currentUser?.name}
-              </span>
+                    {currentUser?.role === "admin" && (
+                      <Link
+                        to="/admin"
+                        className="more-menu-item"
+                        onClick={() =>
+                          setMenuOpen(false)
+                        }
+                      >
+                        <span>👨‍💼</span>
+                        <span>Admin Dashboard</span>
+                      </Link>
+                    )}
 
-              <button
-                className="logout-btn"
-                onClick={() => {
-                  localStorage.removeItem(
-                    "foodieLoggedIn"
-                  );
+                    <Link
+                      to="/my-orders"
+                      className="more-menu-item"
+                      onClick={() =>
+                        setMenuOpen(false)
+                      }
+                    >
+                      <span>📦</span>
+                      <span>My Orders</span>
+                    </Link>
 
-                  localStorage.removeItem(
-                    "foodieToken"
-                  );
+                    <div className="more-menu-user">
+                      <span>👤</span>
 
-                  localStorage.removeItem(
-                    "foodieCurrentUser"
-                  );
+                      <div>
+                        <strong>
+                          {currentUser?.name ||
+                            "User"}
+                        </strong>
 
-                  alert(
-                    "👋 Logged out successfully!"
-                  );
+                        <small>
+                          {currentUser?.email || ""}
+                        </small>
+                      </div>
+                    </div>
 
-                  window.location.href = "/";
-                }}
-              >
-                Logout
-              </button>
+                    <button
+                      type="button"
+                      className="more-menu-item logout-menu-item"
+                      onClick={handleLogout}
+                    >
+                      <span>🚪</span>
+                      <span>Logout</span>
+                    </button>
+
+                  </div>
+                )}
+
+              </div>
 
             </div>
           ) : (
