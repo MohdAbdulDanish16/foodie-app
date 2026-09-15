@@ -11,6 +11,7 @@ import Restaurant from "./pages/Restaurant";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import MyOrders from "./pages/MyOrders";
+import Profile from "./pages/Profile";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import AdminOrders from "./pages/AdminOrders";
 import AdminProtectedRoute from "./pages/AdminProtectedRoute";
@@ -231,6 +232,15 @@ function Home() {
           >
             <span>📦</span>
             <span>My Orders</span>
+          </Link>
+
+          <Link
+            to="/profile"
+            className="more-menu-item"
+            onClick={() => setMenuOpen(false)}
+          >
+            <span>👤</span>
+            <span>My Profile</span>
           </Link>
 
           <div className="more-menu-user">
@@ -656,6 +666,15 @@ function App() {
         element={
           <ProtectedRoute>
             <MyOrders />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <Profile />
           </ProtectedRoute>
         }
       />
