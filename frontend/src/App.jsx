@@ -153,75 +153,116 @@ function Home() {
             <div className="user-menu">
 
               {/* Three Dot Menu */}
-              <div className="more-menu-wrapper">
+<div className="more-menu-wrapper">
 
-                <button
-                  type="button"
-                  className="more-menu-btn"
-                  aria-label="Open menu"
-                  aria-expanded={menuOpen}
-                  onClick={() =>
-                    setMenuOpen(!menuOpen)
-                  }
-                >
-                  ⋮
-                </button>
+  <button
+    type="button"
+    className="more-menu-btn"
+    aria-label="Open menu"
+    aria-expanded={menuOpen}
+    onClick={() => setMenuOpen(!menuOpen)}
+  >
+    ⋮
+  </button>
 
-                {menuOpen && (
-                  <div className="more-menu-dropdown">
+  {menuOpen && (
+    <div className="more-menu-dropdown">
 
-                    {currentUser?.role === "admin" && (
-                      <Link
-                        to="/admin"
-                        className="more-menu-item"
-                        onClick={() =>
-                          setMenuOpen(false)
-                        }
-                      >
-                        <span>👨‍💼</span>
-                        <span>Admin Dashboard</span>
-                      </Link>
-                    )}
+      {/* Mobile Navigation */}
+      <div className="mobile-menu-links">
 
-                    <Link
-                      to="/my-orders"
-                      className="more-menu-item"
-                      onClick={() =>
-                        setMenuOpen(false)
-                      }
-                    >
-                      <span>📦</span>
-                      <span>My Orders</span>
-                    </Link>
+        <Link
+          to="/"
+          className="more-menu-item"
+          onClick={() => setMenuOpen(false)}
+        >
+          <span>🏠</span>
+          <span>Home</span>
+        </Link>
 
-                    <div className="more-menu-user">
-                      <span>👤</span>
+        <a
+          href="#restaurants"
+          className="more-menu-item"
+          onClick={() => setMenuOpen(false)}
+        >
+          <span>🍽️</span>
+          <span>Restaurants</span>
+        </a>
 
-                      <div>
-                        <strong>
-                          {currentUser?.name ||
-                            "User"}
-                        </strong>
+        <Link
+          to="/about"
+          className="more-menu-item"
+          onClick={() => setMenuOpen(false)}
+        >
+          <span>ℹ️</span>
+          <span>About</span>
+        </Link>
 
-                        <small>
-                          {currentUser?.email || ""}
-                        </small>
-                      </div>
-                    </div>
+        <Link
+          to="/contact"
+          className="more-menu-item"
+          onClick={() => setMenuOpen(false)}
+        >
+          <span>📞</span>
+          <span>Contact</span>
+        </Link>
 
-                    <button
-                      type="button"
-                      className="more-menu-item logout-menu-item"
-                      onClick={handleLogout}
-                    >
-                      <span>🚪</span>
-                      <span>Logout</span>
-                    </button>
+      </div>
 
-                  </div>
-                )}
+      {/* Logged In User Options */}
+      {isLoggedIn && (
+        <>
 
-              </div>
+          {currentUser?.role === "admin" && (
+            <Link
+              to="/admin"
+              className="more-menu-item"
+              onClick={() => setMenuOpen(false)}
+            >
+              <span>👨‍💼</span>
+              <span>Admin Dashboard</span>
+            </Link>
+          )}
+
+          <Link
+            to="/my-orders"
+            className="more-menu-item"
+            onClick={() => setMenuOpen(false)}
+          >
+            <span>📦</span>
+            <span>My Orders</span>
+          </Link>
+
+          <div className="more-menu-user">
+            <span>👤</span>
+
+            <div>
+              <strong>
+                {currentUser?.name || "User"}
+              </strong>
+
+              <small>
+                {currentUser?.email || ""}
+              </small>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            className="more-menu-item logout-menu-item"
+            onClick={handleLogout}
+          >
+            <span>🚪</span>
+            <span>Logout</span>
+          </button>
+
+        </>
+      )}
+
+    </div>
+  )}
+
+</div>
 
             </div>
           ) : (

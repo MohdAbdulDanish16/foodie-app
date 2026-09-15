@@ -11036,3 +11036,43 @@ footer p {
   }
 
 }
+/* =========================================================
+   MOBILE MENU LINKS
+   ========================================================= */
+
+.mobile-menu-links {
+  display: none;
+}
+
+
+/* =========================================================
+   MOBILE THREE-DOT MENU
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  .mobile-menu-links {
+    display: block;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #eeeeee;
+  }
+
+  .mobile-menu-links .more-menu-item {
+    min-height: 44px;
+  }
+
+}
+
+
+/* =========================================================
+   DESKTOP - HIDE MOBILE NAV LINKS
+   ========================================================= */
+
+@media (min-width: 701px) {
+
+  .mobile-menu-links {
+    display: none;
+  }
+
+}
